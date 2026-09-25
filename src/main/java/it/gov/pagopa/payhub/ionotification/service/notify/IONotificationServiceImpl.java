@@ -12,6 +12,7 @@ import it.gov.pagopa.payhub.ionotification.repository.IONotificationRepository;
 import it.gov.pagopa.payhub.ionotification.service.UserIdObfuscatorService;
 import it.gov.pagopa.payhub.ionotification.utils.Utilities;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -49,9 +50,9 @@ public class IONotificationServiceImpl implements IONotificationService {
     public MessageResponseDTO sendMessage(String accessToken, NotificationRequestDTO notificationRequestDTO) {
         log.info("Sending notification to organizationId {} and debtPositionTypeOrgId {} related to nav {}",
                 notificationRequestDTO.getOrgId(), notificationRequestDTO.getDebtPositionTypeOrgId(), notificationRequestDTO.getNav());
-        String apiKey = organizationService.getOrganizationApiKey(accessToken, notificationRequestDTO.getOrgId(), OrganizationApiKeyType.IO);
-        if (apiKey != null) {
-            String token = retrieveTokenIO(notificationRequestDTO.getServiceId(), apiKey);
+        OrganizationApiKeys apiKey = organizationService.getOrganizationApiKey(accessToken, notificationRequestDTO.getOrgId(), OrganizationApiKeyType.IO);
+        if (apiKey != null && Boolean.TRUE.equals(apiKey.getServiceEnabled())) {
+            String token = retrieveTokenIO(notificationRequestDTO.getServiceId(), apiKey.getApiKey());
             if (isSenderAllowed(notificationRequestDTO, token)) {
                 String notificationId = sendNotification(notificationRequestDTO, token);
                 return MessageResponseDTO.builder().notificationId(notificationId).build();

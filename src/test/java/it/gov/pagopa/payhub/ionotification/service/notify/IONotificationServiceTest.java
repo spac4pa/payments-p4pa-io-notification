@@ -14,7 +14,9 @@ import it.gov.pagopa.payhub.ionotification.model.IONotification;
 import it.gov.pagopa.payhub.ionotification.model.IOService;
 import it.gov.pagopa.payhub.ionotification.repository.IONotificationRepository;
 import it.gov.pagopa.payhub.ionotification.service.UserIdObfuscatorService;
+import it.gov.pagopa.pu.organization.dto.generated.KeyTypeEnum;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -80,8 +82,13 @@ class IONotificationServiceTest {
         MessageResponseDTO messageResponseDTO = buildMessageResponseDTO();
         String accessToken = "accessToken";
 
+        OrganizationApiKeys organizationApiKeys = new OrganizationApiKeys();
+        organizationApiKeys.setApiKey(API_KEY);
+        organizationApiKeys.setKeyType(KeyTypeEnum.IO);
+        organizationApiKeys.serviceEnabled(true);
+
         when(organizationServiceMock.getOrganizationApiKey(accessToken, ORG_ID, OrganizationApiKeyType.IO))
-                .thenReturn("API_KEY");
+                .thenReturn(organizationApiKeys);
 
         when(connectorMock.getProfile(fiscalCodeDTO, keysDTO.getPrimaryKey()))
                 .thenReturn(getUserProfileResponse());
@@ -104,10 +111,15 @@ class IONotificationServiceTest {
         String accessToken = "accessToken";
         FiscalCodeDTO legalPersonCF = new FiscalCodeDTO("12345678901");
 
+        OrganizationApiKeys organizationApiKeys = new OrganizationApiKeys();
+        organizationApiKeys.setApiKey(API_KEY);
+        organizationApiKeys.setKeyType(KeyTypeEnum.IO);
+        organizationApiKeys.serviceEnabled(true);
+
         when(ioNotificationMapperMock.mapToGetProfile(requestDTO)).thenReturn(legalPersonCF);
 
         when(organizationServiceMock.getOrganizationApiKey(accessToken, ORG_ID, OrganizationApiKeyType.IO))
-                .thenReturn("API_KEY");
+                .thenReturn(organizationApiKeys);
         when(connectorMock.getServiceKeys(SERVICE_ID, API_KEY)).thenReturn(keysDTO);
 
         when(obfuscatorServiceMock.obfuscate(FISCAL_CODE)).thenReturn(USER_ID);
@@ -137,9 +149,13 @@ class IONotificationServiceTest {
     void givenSendNotificationWhenSenderIsNotAllowedThenSaveKO() {
         mockServiceAndObtainIOToken();
         String accessToken = "accessToken";
+        OrganizationApiKeys organizationApiKeys = new OrganizationApiKeys();
+        organizationApiKeys.setApiKey(API_KEY);
+        organizationApiKeys.setKeyType(KeyTypeEnum.IO);
+        organizationApiKeys.serviceEnabled(true);
 
         when(organizationServiceMock.getOrganizationApiKey(accessToken, ORG_ID, OrganizationApiKeyType.IO))
-                .thenReturn("API_KEY");
+                .thenReturn(organizationApiKeys);
 
         when(connectorMock.getProfile(fiscalCodeDTO, keysDTO.getPrimaryKey()))
                 .thenReturn(new ProfileResource(false, new ArrayList<>()));
@@ -154,9 +170,13 @@ class IONotificationServiceTest {
     void givenSendNotificationWhenSenderNotAllowedExceptionThenSaveKO() {
         mockServiceAndObtainIOToken();
         String accessToken = "accessToken";
+        OrganizationApiKeys organizationApiKeys = new OrganizationApiKeys();
+        organizationApiKeys.setApiKey(API_KEY);
+        organizationApiKeys.setKeyType(KeyTypeEnum.IO);
+        organizationApiKeys.serviceEnabled(true);
 
         when(organizationServiceMock.getOrganizationApiKey(accessToken, ORG_ID, OrganizationApiKeyType.IO))
-                .thenReturn("API_KEY");
+                .thenReturn(organizationApiKeys);
 
         doReturn(null).when(connectorMock).getProfile(fiscalCodeDTO, keysDTO.getPrimaryKey());
 

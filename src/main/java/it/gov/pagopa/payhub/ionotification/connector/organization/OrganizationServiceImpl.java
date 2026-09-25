@@ -2,6 +2,7 @@ package it.gov.pagopa.payhub.ionotification.connector.organization;
 
 import it.gov.pagopa.payhub.ionotification.connector.organization.client.OrganizationClient;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,7 +21,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     @Cacheable(key = "#organizationId + '-' + #keyType", unless = "#result == null")
-    public String getOrganizationApiKey(String accessToken, Long organizationId, OrganizationApiKeyType keyType) {
+    public OrganizationApiKeys getOrganizationApiKey(String accessToken, Long organizationId, OrganizationApiKeyType keyType) {
         log.debug("Fetching API key for organizationId: {} and keyType: {}", organizationId, keyType);
         try {
             return organizationClient.getOrganizationApiKey(accessToken, organizationId, keyType);

@@ -3,6 +3,7 @@ package it.gov.pagopa.payhub.ionotification.connector.organization.config;
 import it.gov.pagopa.payhub.ionotification.config.json.JsonConfig;
 import it.gov.pagopa.payhub.ionotification.connector.BaseApiHolderTest;
 import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeyType;
+import it.gov.pagopa.pu.organization.dto.generated.OrganizationApiKeys;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +61,7 @@ class OrganizationApisHolderTest extends BaseApiHolderTest {
         assertAuthenticationShouldBeSetInThreadSafeMode(
                 accessToken -> apisHolder.getOrganizationApi(accessToken)
                         .getOrganizationApiKey(1L, OrganizationApiKeyType.IO, null),
-                String.class,
+                OrganizationApiKeys.class,
                 apisHolder::unload);
     }
 }
